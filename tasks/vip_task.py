@@ -1,72 +1,138 @@
 from BiliClient import asyncbili
 from .push_message_task import webhook
-from .import_once import taday
+from typing import Coroutine, Awaitable
+from datetime import datetime, timedelta
+from calendar import monthrange
 import logging
 
 async def vip_task(biliapi: asyncbili,
                    task_config: dict
-                   ) -> None:
-    if taday == 1:
-        try:
-            ret = await biliapi.vipPrivilegeReceive(1)
-            if ret["code"] == 0:
-                logging.info(f'{biliapi.name}: 成功领取大会员B币')
+                   ) -> Coroutine[Awaitable[None]]:
+    now = datetime.utcnow() + timedelta(hours=8)
+    month_len = monthrange(now.year, now.month)[1]
+    receive_day = task_config.get("receiveDay", 1)
+    receive_day = receive_day if receive_day > 0 else monthlen + receive_day
+    chargeDay = task_config.get("chargeDay", 1)
+    chargeDay = chargeDay if chargeDay > 0 else monthlen + chargeDay
+
+    if now.day == receive_day:
+        await receivePrivilege(biliapi)
+
+    if now.day == chargeDay:
+        await bpCharge(biliapi, task_config["BpCharge"])
+
+pivilege = ('大会员B币券', '大会员优惠券')
+async def receivePrivilege(biliapi: asyncbili) -> Coroutine[Awaitable[None]]:
+    '''领取大会员权益'''
+    try:
+        ret = await biliapi.vipPrivilegeList()
+    except Exception as e:
+        logging.warning(f'{biliapi.name}: 获取大会员权益列表异常，原因为({repr(e)})')
+        webhook.addMsg('msg_simple', f'{biliapi.name}:领取大会员权益失败\n')
+        return
+
+    if ret["code"] != 0:
+        logging.warning(f'{biliapi.name}: 获取大会员权益列表失败，信息为({ret["message"]})')
+        webhook.addMsg('msg_simple', f'{biliapi.name}:领取大会员权益失败\n')
+        return
+
+    for x in ret["data"]["list"]:
+        if x["state"] == 0:
+            try:
+                ret = await biliapi.vipPrivilegeReceive(x["type"])
+            except Exception as e:
+                logging.warning(f'{biliapi.name}: 领取{pivilege[x["type"] - 1]}异常，原因为({str(e)})')
+                webhook.addMsg('msg_simple', f'{biliapi.name}:领取{pivilege[x["type"] - 1]}失败\n')
             else:
-                logging.warning(f'{biliapi.name}: 领取大会员B币失败，信息为({ret["message"]})')
-                webhook.addMsg('msg_simple', f'{biliapi.name}:领取B币劵失败\n')
-        except Exception as e:
-            logging.warning(f'{biliapi.name}: 领取大会员B币异常，原因为({str(e)})')
-            webhook.addMsg('msg_simple', f'{biliapi.name}:领取B币劵失败\n')
+                if ret["code"] == 0:
+                    logging.info(f'{biliapi.name}: 成功领取{pivilege[x["type"] - 1]}')
+                else:
+                    logging.warning(f'{biliapi.name}: 领取{pivilege[x["type"] - 1]}失败，信息为({ret["message"]})')
+                    webhook.addMsg('msg_simple', f'{biliapi.name}:领取{pivilege[x["type"] - 1]}失败\n')
 
-        try:
-            ret = await biliapi.vipPrivilegeReceive(2)
-            if ret["code"] == 0:
-                logging.info(f'{biliapi.name}: 成功领取大会员优惠券')
+async def receivePrivilege(biliapi: asyncbili) -> Coroutine[Awaitable[None]]:
+    '''领取大会员权益'''
+    try:
+        ret = await biliapi.vipPrivilegeList()
+    except Exception as e:
+        logging.warning(f'{biliapi.name}: 获取大会员权益列表异常，原因为({repr(e)})')
+        webhook.addMsg('msg_simple', f'{biliapi.name}:领取大会员权益失败\n')
+        return
+
+    if ret["code"] != 0:
+        logging.warning(f'{biliapi.name}: 获取大会员权益列表失败，信息为({ret["message"]})')
+        webhook.addMsg('msg_simple', f'{biliapi.name}:领取大会员权益失败\n')
+        return
+
+    for x in ret["data"]["list"]:
+        if x["state"] == 0:
+            try:
+                ret = await biliapi.vipPrivilegeReceive(x["type"])
+            except Exception as e:
+                logging.warning(f'{biliapi.name}: 领取{pivilege[x["type"] - 1]}异常，原因为({str(e)})')
+                webhook.addMsg('msg_simple', f'{biliapi.name}:领取{pivilege[x["type"] - 1]}失败\n')
             else:
-                logging.warning(f'{biliapi.name}: 领取大会员优惠券失败，信息为({ret["message"]})')
-                webhook.addMsg('msg_simple', f'{biliapi.name}:领取优惠劵失败\n')
-        except Exception as e:
-            logging.warning(f'{biliapi.name}: 领取大会员优惠券异常，原因为({str(e)})')
-            webhook.addMsg('msg_simple', f'{biliapi.name}:领取优惠劵失败\n')
+                if ret["code"] == 0:
+                    logging.info(f'{biliapi.name}: 成功领取{pivilege[x["type"] - 1]}')
+                else:
+                    logging.warning(f'{biliapi.name}: 领取{pivilege[x["type"] - 1]}失败，信息为({ret["message"]})')
+                    webhook.addMsg('msg_simple', f'{biliapi.name}:领取{pivilege[x["type"] - 1]}失败\n')
 
-    elif taday == 28:
-        if not 'BpCharge' in task_config or not task_config["BpCharge"]:
-            return
+async def bpCharge(biliapi: asyncbili,
+                   chargeConfig: dict
+                   ) -> Coroutine[Awaitable[None]]:
+    '''B币劵消费'''
+    try:
+        ret = await biliapi.getUserWallet()
+    except Exception as e:
+        logging.warning(f'{biliapi.name}: 获取B币劵数量异常，原因为{repr(e)}，跳过消费')
+        webhook.addMsg('msg_simple', f'{biliapi.name}:花费B币劵失败\n')
+        return
 
-        for x in task_config["BpCharge"]:
-            if not task_config["BpCharge"][x] > 0:
-                continue
+    if ret["code"] != 0:
+        logging.warning(f'{biliapi.name}: 获取B币劵数量失败，信息为{ret["message"]}，跳过消费')
+        return
 
-            if x == 'charge':
-                try:
-                    cbp = (await biliapi.getUserWallet())["data"]["couponBalance"] #B币劵数量
-                    if cbp > 0:
-                        cbp = cbp if cbp < task_config["BpCharge"][x] else task_config["BpCharge"][x]
-                        ret = await biliapi.elecPayBcoin(biliapi.uid, cbp)
-                        if ret["data"]["order_no"]:
-                            logging.info(f'{biliapi.name}: 成功用{cbp}张B币劵给自己充电，订单编号为{ret["data"]["order_no"]}')
-                        else:
-                            logging.warning(f'{biliapi.name}: 给自己充电失败，信息为{ret["data"]["msg"]}')
-                            webhook.addMsg('msg_simple', f'{biliapi.name}:充电失败\n')
-                    else:
-                        logging.info(f'{biliapi.name}: B币劵数量为0，跳过给自己充电')
-                except Exception as e:
-                    logging.warning(f'{biliapi.name}: 获取账户B币劵并给自己充电异常，原因为{str(e)}')
-                    webhook.addMsg('msg_simple', f'{biliapi.name}:充电失败\n')
+    cbp = ret["data"]["couponBalance"]
+    for x in chargeConfig:
+        if cbp < 1:
+            break
+        if task_config["BpCharge"][x] < 1:
+            continue
+        pay = cbp if task_config["BpCharge"][x] > cbp else task_config["BpCharge"][x]
 
-            elif x == 'Bp2Gold':
-                try:
-                    cbp = (await biliapi.getUserWallet())["data"]["couponBalance"]
-                    if cbp > 0:
-                        cbp = cbp if cbp < task_config["BpCharge"][x] else task_config["BpCharge"][x]
-                        ret = await biliapi.xliveBp2Gold(cbp)
-                        if ret["code"] == 0:
-                            logging.info(f'{biliapi.name}: 成功将{cbp}张B币劵兑换为金瓜子，订单编号为{ret["data"]["order_id"]}')
-                        else:
-                            logging.warning(f'{biliapi.name}: 将B币劵兑换为金瓜子失败，信息为{ret["message"]}')
-                            webhook.addMsg('msg_simple', f'{biliapi.name}:兑换金瓜子失败\n')
-                    else:
-                        logging.info(f'{biliapi.name}: B币劵数量为0，跳过兑换金瓜子')
-                except Exception as e:
-                    logging.warning(f'{biliapi.name}: 获取账户B币劵并兑换金瓜子异常，原因为{str(e)}')
-                    webhook.addMsg('msg_simple', f'{biliapi.name}:兑换金瓜子失败\n')
+        if x == 'charge':
+            try:
+                ret = await biliapi.elecPayBcoin(biliapi.uid, pay)
+            except Exception as e:
+                logging.warning(f'{biliapi.name}: B币劵充电异常，原因为{repr(e)}')
+            else:
+                if ret["data"]["order_no"]: #order_no是订单号，如果是空字符串就兑换失败了
+                    cbp -= pay
+                    logging.info(f'{biliapi.name}: 成功花费{pay}张B币劵给自己充电')
+                else:
+                    logging.warning(f'{biliapi.name}: B币劵充电失败，信息为{ret["message"]}')
+
+        elif x == 'Bp2Gold':
+            try:
+                ret = await biliapi.xliveBp2Gold(pay)
+            except Exception as e:
+                logging.warning(f'{biliapi.name}: B币劵兑换金瓜子异常，原因为{repr(e)}')
+            else:
+                if ret["code"] == 0:
+                    cbp -= pay
+                    logging.info(f'{biliapi.name}: 成功花费{pay}张B币劵兑换金瓜子')
+                else:
+                    logging.warning(f'{biliapi.name}: B币劵兑换金瓜子失败，信息为{ret["message"]}')
+
+        elif x == 'Bp2Coupons':
+            try:
+                ret = await biliapi.mangaPayBCoin(pay)
+            except Exception as e:
+                logging.warning(f'{biliapi.name}: B币劵兑换漫读劵异常，原因为{repr(e)}')
+            else:
+                if ret["code"] == 0:
+                    cbp -= pay
+                    logging.info(f'{biliapi.name}: 成功花费{pay}张B币劵兑换漫读劵')
+                else:
+                    logging.warning(f'{biliapi.name}: B币劵兑换漫读劵失败，信息为{ret["message"]}')

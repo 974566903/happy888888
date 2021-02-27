@@ -425,6 +425,12 @@ class asyncBiliApi(object):
         async with self._session.post(url, data=post_data, verify_ssl=False) as r:
             return await r.json()
 
+    async def vipPrivilegeList(self) -> Awaitable[Dict[str, Any]]:
+        '''获取B站大会员权益列表(B币劵，优惠券)'''
+        url = 'https://api.bilibili.com/x/vip/privilege/my'
+        async with self._session.get(url, verify_ssl=False) as r:
+            return await r.json()
+
     async def getUserWallet(self, 
                             platformType: int = 3
                             ) -> Awaitable[Dict[str, Any]]:
@@ -1072,8 +1078,8 @@ class asyncBiliApi(object):
 
     async def mangaPayBCoin(self, 
                             pay_amount: int, 
-                            product_id=1, 
-                            platform='web'
+                            product_id: int = 1, 
+                            platform: str = 'web'
                             ) -> Awaitable[Dict[str, Any]]:
         '''
         B币购买漫画
@@ -1083,7 +1089,7 @@ class asyncBiliApi(object):
         '''
         url = f'https://manga.bilibili.com/twirp/pay.v1.Pay/PayBCoin?platform={platform}'
         post_data = {
-            "pay_amount": pay_amount,
+            "pay_amount": str(pay_amount),
             "product_id": product_id
             }
         async with self._session.post(url, json=post_data, verify_ssl=False) as r:
