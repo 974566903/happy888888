@@ -35,13 +35,13 @@ if [ $tag = "latest" ];then
   rm /tmp/BiliExp.zip
   mv /tmp/*BiliExp* /tmp/BiliExp
 elif [ $tag = "newest" ];then
-  wget -O /tmp/BiliExp.zip https://github.com/happy888888/BiliExp/archive/master.zip
+  wget -O /tmp/BiliExp.zip https://archive.fastgit.org/happy888888/BiliExp/archive/master.zip
   unzip /tmp/BiliExp.zip -d /tmp
   rm /tmp/BiliExp.zip
   mv /tmp/BiliExp* /tmp/BiliExp
 else
   if [ ! -d "/BiliExp/code-cache" ]; then
-    wget -O /tmp/BiliExp.zip "https://github.com/happy888888/BiliExp/archive/$tag.zip"
+    wget -O /tmp/BiliExp.zip "https://archive.fastgit.org/happy888888/BiliExp/archive/$tag.zip"
 	unzip /tmp/BiliExp.zip -d /tmp
 	rm /tmp/BiliExp.zip
 	mv /tmp/BiliExp* /tmp/BiliExp
