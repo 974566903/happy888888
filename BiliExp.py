@@ -25,7 +25,8 @@ def initlog(log_file: str, log_console: bool, msg_raw: bool = False):
     '''初始化日志参数'''
     logger_raw = logging.getLogger()
     logger_raw.setLevel(logging.INFO)
-    formatter1 = logging.Formatter("[%(levelname)s]: %(message)s")
+    formatter1 = logging.Formatter("[%(asctime)s] [%(levelname)s]: %(message)s")
+    formatter1.converter = lambda x: time.localtime(x + 28800 + time.timezone) #时区转换
     if log_file:
         try:
             file_handler = logging.FileHandler(log_file, encoding='utf-8')#输出到日志文件
