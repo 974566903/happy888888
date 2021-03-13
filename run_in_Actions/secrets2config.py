@@ -115,7 +115,7 @@ if PUSH_MESSAGE:
             })
             print(f"push_message第{ii+1}行解析为酷Q消息推送")
         else:
-            ma = re.match("^([0-9]{7,11}:[0-9 a-z A-Z]*),(.*)$", value)
+            ma = re.match("^([0-9]{7,11}:[0-9 a-z A-Z -_]*),(.*)$", value)
             if ma:
                 i += 1
                 ma = ma.groups()
