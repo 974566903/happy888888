@@ -14,13 +14,6 @@ except:
 main_version = (1, 2, 1)
 main_version_str = '.'.join(map(str, main_version))
 
-def version_compare(version: str):
-    ver = tuple(map(int, version.strip().split('.')))
-    for ii in range(len(main_version)):
-        if ver[ii] < main_version[ii]:
-            return False
-    return True
-
 def initlog(log_file: str, log_console: bool, msg_raw: bool = False):
     '''初始化日志参数'''
     logger_raw = logging.getLogger()
@@ -76,11 +69,11 @@ def load_config(path: str) -> OrderedDict:
 async def start(configData: dict):
     '''开始任务'''
     config_version = configData.get('version', '1.0.0')
-    if version_compare(config_version):
+    if tuple(map(int, config_version.strip().split('.'))) == main_version:
         logging.info(f'当前程序版本为v{main_version_str},配置文件版本为v{config_version}')
     else:
-        logging.warning(f'当前程序版本为v{main_version_str},配置文件版本为v{config_version},可更新配置文件')
-        tasks.webhook.addMsg('msg_simple', '有新版本配置文件可供使用\n')
+        logging.warning(f'当前程序版本为v{main_version_str},配置文件版本为v{config_version},版本不匹配可能带来额外问题')
+        tasks.webhook.addMsg('msg_simple', '配置文件版本不匹配\n')
     
     await asyncio.wait([run_user_tasks(user, configData["default"]) for user in configData["users"]]) #执行任务
     await tasks.webhook.send() #推送消息

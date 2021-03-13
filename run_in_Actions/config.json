@@ -191,15 +191,26 @@
         "hooks": [ // 在这里以数组的形式定义所有消息推送回调接口
             {
                 "enable": false, // 开关，需要开启请直接把本项删除或设置为true
-                "name": "server酱消息推送", // webhook名称，仅用于日志显示不用于实际消息推送
+                "name": "server酱Turbo版消息推送", // webhook名称，仅用于日志显示不用于实际消息推送
                 "msg_separ": "\n\n",       // 消息分隔符，推送消息时将每一条消息用两个换行符(\n)隔开
                 "method": 1,               // 请求方式,0为get,1为post,3为以json方式post
-                "url": "https://sc.ftqq.com/{SCKEY}.send", // 请求地址,{SCKEY}为对上面variable变量中的SCKEY的引用，当然也可以直接把SCKEY的值放在url里面
+                "url": "https://sctapi.ftqq.com/{SendKey}.send", // 请求地址,{SendKey}为对上面variable变量中的SendKey的引用，当然也可以直接把SCKEY的值放在url里面
                 "params": {                                // 请求参数,server酱推送需要text和desp两个参数，分别把变量里title和msg_simple(简化消息)赋值进去
                     "text": "{title}",
                     "desp": "{msg_simple}" 
                 }
-            }/*, //若要实现其他消息推送接口，需要自己查阅相关文档构建method，url和params三个参数，下面是邮箱推送和telegram_bot推送的例子，其他平台自行探索
+            }/*,
+            {
+                "enable": false,
+                "name": "server酱消息推送",
+                "msg_separ": "\n\n",
+                "method": 1,
+                "url": "https://sc.ftqq.com/{SCKEY}.send",
+                "params": {
+                    "text": "{title}",
+                    "desp": "{msg_simple}" 
+                }
+            }, //若要实现其他消息推送接口，需要自己查阅相关文档构建method，url和params三个参数，下面是邮箱推送和telegram_bot推送的例子，其他平台自行探索
             {
                 "enable": false,
                 "name": "邮箱消息推送",

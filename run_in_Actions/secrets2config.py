@@ -76,7 +76,20 @@ if PUSH_MESSAGE:
     webhooks = []
     for ii, x in enumerate(PUSH_MESSAGE.split("\n")):
         value = x.strip()
-        if x.startswith("SCU"):
+        if x.startswith("SCT"):
+            i += 1
+            webhooks.append({
+                "name": f"server酱Turbo版消息推送{i}",
+                "msg_separ": "\n\n",
+                "method": 1,
+                "url": f"https://sctapi.ftqq.com/{value}.send",
+                "params": {
+                    "text": "{title}",
+                    "desp": f"{{{msg_type}}}" 
+                }
+            })
+            print(f"push_message第{ii+1}行解析为server酱Turbo版消息推送")
+        elif x.startswith("SCU"):
             i += 1
             webhooks.append({
                 "name": f"server酱消息推送{i}",

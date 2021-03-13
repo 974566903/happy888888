@@ -111,7 +111,7 @@
                 "except": ["抽奖"], // 排除条件,值为字符串数组，符合本条件的标签不会携带
                 "reply_with_tag": false // 回复是否带上标签，值为true或false分别表示带和不带
             }, */
-            "time_quantum": [0, 600], //转发时间区间，值为二维整数数组(单位秒)，通过这个参数可以把每天时间分成n个区间，当此任务在第m个时间区间运行时，转发第m-1个区间中的动态
+            "time_quantum": [-43200, 43200], //转发时间区间，值为二维整数数组(单位秒)，通过这个参数可以把每天时间分成n个区间，当此任务在第m个时间区间运行时，转发第m-1个区间中的动态
                                              //比如设置为[0, 600]，就会把00:00:00-00:10:00当做时间区间1，00:10:00-00:20:00当做时间区间2，当在时间区间2中运行此任务值转发时间区间1的动态
                                              //此参数用于明确每次的转发动态的时间区间来防止重复转发同一个动态或者漏掉动态，同时划分比较小的时间区间可避免在同一时间转发过多动态被识别为抽奖号
                                              //任务运行周期应该等于两个数字相减的绝对值，划分更小的时间区间的同时也需要增加此任务启动的频率，默认[0, 86400]为一天运行一次，一次转发一天的动态
@@ -182,24 +182,35 @@
         //  "msg_raw": null,    // msg_raw为完整的日志消息，用于下面hooks消息推送接口引用，若不引用最好注释掉，否则占用内存空间
 
             "title": "B站助手脚本消息推送", // 此为自定义变量，用于下面hooks消息推送接口引用
-            "SCKEY": "" ,
+            "SendKey": "",
         /*  "email": "",
             "telegram_bot_token": "",
             "telegram_bot_chatid": "",
             "SKEY": "" */
         },
         "hooks": [ // 在这里以数组的形式定义所有消息推送回调接口
-            {
+        	{
                 "enable": false, // 开关，需要开启请直接把本项删除或设置为true
-                "name": "server酱消息推送", // webhook名称，仅用于日志显示不用于实际消息推送
+                "name": "server酱Turbo版消息推送", // webhook名称，仅用于日志显示不用于实际消息推送
                 "msg_separ": "\n\n",       // 消息分隔符，推送消息时将每一条消息用两个换行符(\n)隔开
                 "method": 1,               // 请求方式,0为get,1为post,3为以json方式post
-                "url": "https://sc.ftqq.com/{SCKEY}.send", // 请求地址,{SCKEY}为对上面variable变量中的SCKEY的引用，当然也可以直接把SCKEY的值放在url里面
+                "url": "https://sctapi.ftqq.com/{SendKey}.send", // 请求地址,{SendKey}为对上面variable变量中的SendKey的引用，当然也可以直接把SCKEY的值放在url里面
                 "params": {                                // 请求参数,server酱推送需要text和desp两个参数，分别把变量里title和msg_simple(简化消息)赋值进去
                     "text": "{title}",
                     "desp": "{msg_simple}" 
                 }
-            }/*, //若要实现其他消息推送接口，需要自己查阅相关文档构建method，url和params三个参数，下面是邮箱推送和telegram_bot推送的例子，其他平台自行探索
+            }/*,
+            {
+                "enable": false,
+                "name": "server酱消息推送",
+                "msg_separ": "\n\n",
+                "method": 1,
+                "url": "https://sc.ftqq.com/{SCKEY}.send",
+                "params": {
+                    "text": "{title}",
+                    "desp": "{msg_simple}" 
+                }
+            }, //若要实现其他消息推送接口，需要自己查阅相关文档构建method，url和params三个参数，下面是邮箱推送和telegram_bot推送的例子，其他平台自行探索
             {
                 "enable": false,
                 "name": "邮箱消息推送",
