@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from BiliClient import MangaDownloader
+from BiliClient import MangaDownloader, bili
 import os, sys
 from getopt import getopt
 from json import dump
@@ -118,38 +118,38 @@ def download_task(mag: MangaDownloader, params):
 
 def main(*args, **kwargs):
     interactive_mode = not (kwargs["manga"] or kwargs["pdf"])
-    manga = None
+    biliapi = bili()
     if interactive_mode or kwargs["manga"]:
-        manga = MangaDownloader()
         if path:
             with open(path,'r',encoding='utf-8-sig') as fp:
                 userData = load(fp)
             if userData["SESSDATA"] and \
-               manga.login_by_cookie({"SESSDATA": userData["SESSDATA"]}):
+               biliapi.login_by_cookie({"SESSDATA": userData["SESSDATA"]}):
                 ...
             elif userData["access_token"] and \
                 userData["refresh_token"] and \
-                manga.login_by_access_token(userData["access_token"], userData["refresh_token"], True):
-                userData["SESSDATA"] = manga.SESSDATA
-                userData["bili_jct"] = manga.bili_jct
-                userData["access_token"] = manga.access_token
-                userData["refresh_token"] = manga.refresh_token
+                biliapi.login_by_access_token(userData["access_token"], userData["refresh_token"], True):
+                userData["SESSDATA"] = biliapi.SESSDATA
+                userData["bili_jct"] = biliapi.bili_jct
+                userData["access_token"] = biliapi.access_token
+                userData["refresh_token"] = biliapi.refresh_token
                 with open(path,'w',encoding='utf-8') as fp:
                     dump(userData, fp, ensure_ascii=False, indent=4)
             elif userData["username"] and \
                 userData["password"] and \
-                manga.login_by_password(userData["username"], userData["password"]):
-                userData["SESSDATA"] = manga.SESSDATA
-                userData["bili_jct"] = manga.bili_jct
-                userData["access_token"] = manga.access_token
-                userData["refresh_token"] = manga.refresh_token
+                biliapi.login_by_password(userData["username"], userData["password"]):
+                userData["SESSDATA"] = biliapi.SESSDATA
+                userData["bili_jct"] = biliapi.bili_jct
+                userData["access_token"] = biliapi.access_token
+                userData["refresh_token"] = biliapi.refresh_token
                 with open(path,'w',encoding='utf-8') as fp:
                     dump(userData, fp, ensure_ascii=False, indent=4)
             else:
                 print("当前处于未登录状态")
         else:
             print("当前处于未登录状态")
-
+            
+    manga = MangaDownloader(biliapi)
     if interactive_mode:
         download_interactive(manga)
     else:
@@ -175,7 +175,7 @@ if __name__=="__main__":
     opts, args = getopt(sys.argv[1:], "hVfm:e:p:", ["help", "version", "pdf", "split", "manga=", "episode=", "path=", "width=", "height="])
     for opt, arg in opts:
         if opt in ('-h','--help'):
-            print('mangaDownloader -p <下载文件夹> -m <漫画> -e <章节数> -f')
+            print('mangaDownloader -p <下载文件夹> -m <漫画> -e <章节数> -f --width=<PDF每页宽度> --height=<PDF每页高度> --split')
             print(' -p --path      下载保存的路径，提供一个文件夹路径，没有会自动创建文件夹，不提供默认为当前文件夹')
             print(' -m --manga     下载的漫画mc号，整数')
             print(' -e --episode   章节数，不提供默认下载所有章节，多个用逗号分隔，连续用减号分隔  -e 2,3,5-7,10 表示2,3,5,6,7,10章节，注意番外也算一个章节')
