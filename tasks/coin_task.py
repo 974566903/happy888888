@@ -1,6 +1,5 @@
 from BiliClient import asyncbili
 from .push_message_task import webhook
-from .import_once import get_ids
 import logging
 
 async def coin_task(biliapi: asyncbili, 
@@ -237,7 +236,7 @@ async def get_coin_aids(biliapi: asyncbili,
     '''按条件生成需要投币的稿件id，异步生成器'''
     for mode in task_config["do_task"]:
         if mode == 1:
-            for x in (await get_ids(biliapi))["data"]["archives"]:
+            for x in (await biliapi.getRegions(27, 15))["data"]["archives"]:
                 yield x["aid"], 0
         elif mode == 2:
             if 'up' in task_config:
