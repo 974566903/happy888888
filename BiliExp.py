@@ -74,8 +74,8 @@ async def start(configData: dict):
     else:
         logging.warning(f'当前程序版本为v{main_version_str},配置文件版本为v{config_version},版本不匹配可能带来额外问题')
         tasks.webhook.addMsg('msg_simple', '配置文件版本不匹配\n')
-    
-    await asyncio.wait([run_user_tasks(user, configData["default"]) for user in configData["users"]]) #执行任务
+
+    await asyncio.wait([asyncio.create_task(run_user_tasks(user, configData["default"])) for user in configData["users"]]) #执行任务
     await tasks.webhook.send() #推送消息
 
 async def run_user_tasks(user: dict,           #用户配置
@@ -116,18 +116,19 @@ async def run_user_tasks(user: dict,           #用户配置
             if task in user["tasks"]:
                 if isinstance(user["tasks"][task], bool):
                     if user["tasks"][task]:
-                        task_array.append(task_function(biliapi))
+                        task_array.append(asyncio.create_task(task_function(biliapi)))
                 elif isinstance(user["tasks"][task], dict):
                     if 'enable' in user["tasks"][task] and user["tasks"][task]["enable"]:
-                        task_array.append(task_function(biliapi, user["tasks"][task]))
+                        task_array.append(asyncio.create_task(task_function(biliapi, user["tasks"][task])))
+
             else:
                 if isinstance(default[task], bool):
                     if default[task]:
-                        task_array.append(task_function(biliapi))
+                        task_array.append(asyncio.create_task(task_function(biliapi)))
                 elif isinstance(default[task], dict):
                     if 'enable' in default[task] and default[task]["enable"]:
-                        task_array.append(task_function(biliapi, default[task]))
-
+                        task_array.append(asyncio.create_task(task_function(biliapi, default[task])))
+        
         if task_array:
             await asyncio.wait(task_array)        #异步等待所有任务完成
 
@@ -145,7 +146,7 @@ def main(*args, **kwargs):
 
     #启动任务
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(start(configData))
+    loop.run_until_complete(loop.create_task(start(configData)))
 
 if __name__=="__main__":
     kwargs = {}
