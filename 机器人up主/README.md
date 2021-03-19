@@ -63,11 +63,10 @@ cookies = { #这里是账号登录后获得的cookie
 
 article = Article(cookies, "测试专栏") #创建一个测试专栏
 
-content = Article.Content() #创建一个专栏内容
+content = article.Content() #创建一个专栏内容
 content.startP().add('测试内容').endP()
 # 开始一个段落   添加文字    结束一个段落
 
-article.setContent(content) #将内容设置到专栏上
 article.save() #保存内容至草稿箱，然后可以去B站专栏草稿箱看到
 ```
 执行上面代码后，就创建了一个标题为"测试专栏"，内容为"测试内容"的专栏</br>
@@ -89,7 +88,7 @@ cookies = { #这里是账号登录后获得的cookie
 
 article = Article(cookies, "测试专栏") #创建一个测试专栏
 
-content = Article.Content() #创建一个专栏内容
+content = article.Content() #创建一个专栏内容
 content.startH().add("测试标题").endH()
 #     标题开始      添加文字      标题结束
 content.startP().add('测试内容').endP()
@@ -101,7 +100,6 @@ content.br() #换行，切换到下一行
 content.startP().add('第三行测试内容：').startD().add('这里是下划线字体').endD().endP()
 #      段落开始      添加文字             删除线开始      添加内容   删除线结束  段落结束
 
-article.setContent(content) #将内容设置到专栏上
 article.save() #保存内容至草稿箱，然后可以去B站专栏草稿箱看到
 ```
 ![image](https://user-images.githubusercontent.com/67217225/99682493-3a941900-2aba-11eb-98c7-1398fdf00c30.png)
@@ -123,12 +121,11 @@ cookies = { #这里是账号登录后获得的cookie
 
 article = Article(cookies, "测试专栏")
 
-content = Article.Content()
+content = article.Content()
 content.startH().add("测试标题").endH()
 content.startP().add('测试不同大小文字：').startS(12).add('小号字体').endS().startS(16).add('标准字体').endS().startS(20).add('大号字体').endS().startS(23).add('特大字体').endS().endP()
 content.startP().add('测试引用内容：').startY().add('这里是引用内容').endY().endP()
 
-article.setContent(content)
 article.save()
 ```
 ![image](https://user-images.githubusercontent.com/67217225/99684649-a6778100-2abc-11eb-906d-627e8ced29d5.png)
@@ -147,7 +144,7 @@ cookies = { #这里是账号登录后获得的cookie
 
 article = Article(cookies, "测试专栏")
 
-content = Article.Content()
+content = article.Content()
 content.startH().add("测试标题").endH()
 content.startP().add("测试有序列表").endP()
 content.startO()
@@ -158,7 +155,6 @@ content.endO()
 content.startP().add("测试无序列表").endP()
 content.startU().startL().add('列表1').endL().startL().add('列表2').endL().startL().add('列表3').endL().endU()
 
-article.setContent(content)
 article.save()
 ```
 ![image](https://user-images.githubusercontent.com/67217225/99686845-f48d8400-2abe-11eb-8a92-6fd00fbce140.png)
@@ -177,11 +173,10 @@ cookies = { #这里是账号登录后获得的cookie
 
 article = Article(cookies, "测试专栏")
 
-content = Article.Content()
+content = article.Content()
 content.startH().add("测试标题").endH()
 content.startP().add("测试超链接").startA("https://www.bilibili.com/video/BV12z4y1y72W").add("点击跳转到视频").endA().endP()
 
-article.setContent(content)
 article.save()
 ```
 ![image](https://user-images.githubusercontent.com/67217225/99687914-26ebb100-2ac0-11eb-8c86-2a5286161fca.png)
@@ -199,7 +194,7 @@ cookies = { #这里是账号登录后获得的cookie
 
 article = Article(cookies, "测试专栏")
 
-content = Article.Content()
+content = article.Content()
 content.startH().add("测试标题").endH()
 content.startP().add("测试B站站内图片链接").endP()
 content.picUrl("https://i0.hdslb.com/bfs/article/d74e83cf96a9028eb3e280d5f877dce53760a7e2.jpg@1280w_800h.webp", "测试链接图片", "300px", "200px")
@@ -208,7 +203,6 @@ fp = open("E:\mydocument\desktop\下载.png", "rb")
 content.picFile(article, fp, "测试本地图片", "50%", "50%")
 fp.close()
 
-article.setContent(content)
 article.save()
 ```
 ![image](https://user-images.githubusercontent.com/67217225/99689295-c8273700-2ac1-11eb-8029-b6086b665ecb.png)
@@ -227,24 +221,23 @@ cookies = { #这里是账号登录后获得的cookie
 
 article = Article(cookies, "测试专栏")
 
-content = Article.Content()
+content = article.content()
 content.startH().add("测试标题").endH()
 content.startP().add("添加一个视频引用").endP()
-content.card(article, "BV1sA411x77G", "video")
+content.card("BV1sA411x77G", "video")
 content.startP().add("添加一个专栏引用").endP()
-content.card(article, "cv8425507", "article")
+content.card("cv8425507", "article")
 content.startP().add("添加一个番剧引用").endP()
-content.card(article, "ss34714", "fanju")
+content.card("ss34714", "fanju")
 content.startP().add("添加一个音乐引用").endP()
-content.card(article, "au1669670", "music")
+content.card("au1669670", "music")
 content.startP().add("添加一个会员购引用").endP()
-content.card(article, "pw30563", "shop")
+content.card("pw30563", "shop")
 content.startP().add("添加一个漫画引用").endP()
-content.card(article, "28951", "caricature")
+content.card("28951", "caricature")
 content.startP().add("添加一个直播引用").endP()
-content.card(article, "lv22321043", "live")
+content.card("lv22321043", "live")
 
-article.setContent(content)
 article.save()
 ```
 ![image](https://user-images.githubusercontent.com/67217225/99697307-98306180-2aca-11eb-9da5-91c97715a822.png)
@@ -262,7 +255,7 @@ cookies = { #这里是账号登录后获得的cookie
 
 article = Article(cookies, "测试专栏")
 
-content = Article.Content()
+content = article.Content()
 content.startH().add("测试标题").endH()
 content.startP().add("添加一个投票").endP()
 vote = {
@@ -286,7 +279,6 @@ vote = {
     }
 content.vote(article, vote) #增加一个投票
 
-article.setContent(content)
 article.save()
 ```
 ![image](https://user-images.githubusercontent.com/67217225/99760914-ceec9300-2b2f-11eb-845e-3e82f752a08e.png)
@@ -328,7 +320,7 @@ submit() 立即发布专栏，save()只是保存到草稿箱，必须先save()�
 ## 发布视频稿件
 这个例子将本地文件`E:\测试视频.mp4`上传，将标题设置为"测试视频"，视频类型为转载，添加"搞笑"标签并把分区设置为 "生活，其他分区"
 ```
-from BiliClient import VideoUploader
+from BiliClient import VideoUploaderWeb as VideoUploader
 import time
 
 cookies = { #这里是账号登录后获得的cookie
@@ -345,7 +337,7 @@ if not upvideo:  #这里判断视频是否上传成功
     print("上传失败")
     exit(0)
 
-video_uploader.add(upvideo) #添加上面上传的视频到视频发布任务，可以一次发布多个视频(分P)
+video_uploader.add(upvideo) #添加上面上传的视频到视频发布任务，一次发布多个视频(分P)需要使用VideoUploaderApp类而不是VideoUploaderWeb
 
 video_uploader.setCopyright(2) #这个视频稿件是转载的
 # video_uploader.setCopyright(1) #这个视频稿件是原创的

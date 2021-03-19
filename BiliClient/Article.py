@@ -397,3 +397,8 @@ class Article(biliContext):
     def delself(self):
         '''删除当前文章草稿'''
         self._api.deleteArticle(self._aid)
+
+    def imageFile2Url(self, 
+                      file: Union[FileIO, BytesIO]
+                      ):
+        return self._api.articleUpcover(file)["data"]["url"].replace("http", "https")
