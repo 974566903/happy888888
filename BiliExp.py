@@ -75,13 +75,14 @@ async def start(configData: dict):
         logging.warning(f'当前程序版本为v{main_version_str},配置文件版本为v{config_version},版本不匹配可能带来额外问题')
         tasks.webhook.addMsg('msg_simple', '配置文件版本不匹配\n')
 
-    await asyncio.wait([asyncio.create_task(run_user_tasks(user, configData["default"])) for user in configData["users"]]) #执行任务
+    await asyncio.wait([asyncio.create_task(run_user_tasks(user, configData["default"], configData.get("http_header", None))) for user in configData["users"]]) #执行任务
     await tasks.webhook.send() #推送消息
 
 async def run_user_tasks(user: dict,           #用户配置
-                         default: dict          #默认配置
+                         default: dict,        #默认配置
+                         header: dict = None
                          ) -> None:
-    async with asyncbili() as biliapi:
+    async with asyncbili(header) as biliapi:
         try:
             if not await biliapi.login_by_cookie(user["cookieDatas"]):
                 logging.warning(f'id为{user["cookieDatas"]["DedeUserID"]}的账户cookie失效，跳过此账户后续操作')

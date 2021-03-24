@@ -12,11 +12,20 @@ elif find_spec('wasm_enc'):
 else:
     enc_server = 'https://1578907340179965.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/bili_server/heartbeat/'
 
+_default_headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+    "Referer": "https://www.bilibili.com/",
+    'Connection': 'keep-alive'
+    }
+
 class asyncBiliApi(object):
     '''B站异步接口类'''
-    def __init__(self):
-
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36","Referer": "https://www.bilibili.com/",'Connection': 'keep-alive'}
+    def __init__(self,
+                 headers: Optional[Dict[str, str]]
+                 ):
+        if not headers:
+            headers = _default_headers
+        
         self._islogin = False
         self._show_name = None
         self._session = ClientSession(
