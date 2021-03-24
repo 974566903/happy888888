@@ -16,7 +16,7 @@ class asyncBiliApi(object):
     '''B站异步接口类'''
     def __init__(self):
 
-        headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/63.0.3239.108","Referer": "https://www.bilibili.com/",'Connection': 'keep-alive'}
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36","Referer": "https://www.bilibili.com/",'Connection': 'keep-alive'}
         self._islogin = False
         self._show_name = None
         self._session = ClientSession(
