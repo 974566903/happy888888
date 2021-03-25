@@ -1,7 +1,7 @@
 from BiliClient import asyncbili
 from .push_message_task import webhook
 import logging, uuid
-from asyncio import TimeoutError, sleep, wait, create_task
+from asyncio import TimeoutError, sleep, wait, ensure_future
 from concurrent.futures import CancelledError
 from async_timeout import timeout
 from typing import Awaitable, AsyncGenerator, Tuple, Union, List, Iterator
@@ -25,7 +25,7 @@ async def xlive_heartbeat_task(biliapi: asyncbili,
     tasks.extend([heartbeat_task(biliapi, x, timeout, live_status) for x in rooms_id])
 
     if tasks:
-        await wait(map(create_task, tasks))
+        await wait(map(ensure_future, tasks))
 
 async def get_rooms(biliapi: asyncbili) -> Awaitable[List[int]]:
     '''获取所有勋章房间'''
