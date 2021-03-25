@@ -11,9 +11,9 @@ async def vip_task(biliapi: asyncbili,
     now = datetime.utcnow() + timedelta(hours=8)
     month_len = monthrange(now.year, now.month)[1]
     receive_day = task_config.get("receiveDay", 1)
-    receive_day = receive_day if receive_day > 0 else monthlen + receive_day
+    receive_day = receive_day if receive_day > 0 else month_len + receive_day
     chargeDay = task_config.get("chargeDay", 1)
-    chargeDay = chargeDay if chargeDay > 0 else monthlen + chargeDay
+    chargeDay = chargeDay if chargeDay > 0 else month_len + chargeDay
 
     if now.day == receive_day:
         await receivePrivilege(biliapi)
