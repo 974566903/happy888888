@@ -1,1 +1,0 @@
-from .spyder import calc_sign
