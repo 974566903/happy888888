@@ -88,6 +88,7 @@ if find_spec('.BiliApi', __name__):
                         'Video',
                         'Downloader',
                         'Article',
+                        'Dynamic',
                         'Danmu2Ass',
                         'Audio',
                         ):
