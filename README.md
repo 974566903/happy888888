@@ -163,6 +163,8 @@ BiliExp
 		***此项为详细配置文件，可配置所有细节参数，前两项secrets均会自动映射到本配置文件中***<br>
 		***请注意不要直接修改/config/config.json文件而是使用本secrets(ADVCONFIG)***<br>
 		如果使用***天选时刻***，***风纪委员投票***和 ***直播心跳(获取小心心)*** 功能可参考 [部分功能推荐配置](https://github.com/happy888888/BiliExp/issues/178)
+        *  2.1.4 (可选)name为"delay"           value为延迟时间
+		添加了本项后在启动前会延时一段时间启动任务，整数+单位(s,m,h),不带单位默认为s(秒)<br>
     *  2.2 添加完上面的"Secrets"后，进入"Actions" --》"run BiliExp"，点击右边的"Run workflow"即可第一次启动
         *  2.2.1 首次fork可能要去actions(正上方的actions不是Settings里面的actions)里面同意使用actions条款，如果"Actions"里面没有"run BiliExp"，点一下右上角的"star"，"run BiliExp"就会出现在"Actions"里面(先按照主分支说明切换分支否则找不到对应的Actions)
 		![image](https://user-images.githubusercontent.com/67217225/98933791-16659480-251c-11eb-9713-c3dbcc6321bf.png)
