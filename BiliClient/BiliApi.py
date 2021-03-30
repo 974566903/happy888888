@@ -556,6 +556,82 @@ class BiliApi(object):
             }
         return self._session.post(url, post_data).json()
 
+    def dynamicCreate(self, 
+                      content: str, 
+                      type: int = 4,
+                      extension: dict = {},
+                      at_uids: list = [],
+                      ctrl: list = []
+                      ) -> dict:
+        '''创建动态(纯文本动态,图片动态请用dynamicCreateDraw方法)'''
+        url = 'https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/create'
+        post_data = {
+            "dynamic_id": 0,
+            "rid": 0,
+            "type": type,
+            "content": content,
+            "extension": json.dumps(extension),
+            "at_uids": ",".join(at_uids),
+            "ctrl": json.dumps(ctrl),
+            "up_choose_comment": 0,
+            "up_close_comment": 0,
+            "csrf": self._bili_jct,
+            "csrf_token": self._bili_jct
+            }
+        return self._session.post(url, data=post_data).json()
+
+    def dynamicCreateDraw(self, 
+                          content: str, 
+                          pictures: list,
+                          type: int = 4,
+                          extension: dict = {},
+                          at_uids: list = [],
+                          ctrl: list = []
+                          ) -> dict:
+        '''创建图片动态'''
+        url = 'https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/create_draw'
+        post_data = {
+            "biz": 3,
+            "category": 3,
+            "type": type,
+            "content": content,
+            #"description": content,
+            "pictures": json.dumps(pictures),
+            #"title": "",
+            #"tags": "",
+            "setting": '{"copy_forbidden":0,"cachedTime":0}',
+            "from": "create.dynamic.web",
+            "extension": json.dumps(extension),
+            "at_uids": ",".join(at_uids),
+            "at_control": json.dumps(ctrl),
+            "up_choose_comment": 0,
+            "up_close_comment": 0,
+            "csrf": self._bili_jct,
+            "csrf_token": self._bili_jct
+            }
+        return self._session.post(url, data=post_data).json()
+
+    def dynamicAtSearch(self,
+                        uname: str
+                        ):
+        '''搜索用户名，获得uid
+        uname  str  用户名'''
+        url = f'https://api.vc.bilibili.com/dynamic_mix/v1/dynamic_mix/at_search?uid={self._uid}&keyword={uname}'
+        return self._session.get(url).json()
+
+    def drawImageUpload(self,
+                        imageFile
+                        ):
+        '''上传图片到B站动态
+        imageFile  BytesIO  图片文件'''
+        url = 'https://api.vc.bilibili.com/api/v1/drawImage/upload'
+        files = {
+                "file_up":("up_image.jpg", imageFile),
+                "biz":(None, "draw"),
+                "category":(None, "daily")
+                }
+        return self._session.post(url, files=files, timeout=(15, 60)).json()
+
     def getLotteryNotice(self, dynamic_id: int):
         "取指定抽奖信息"
         url = f'https://api.vc.bilibili.com/lottery_svr/v1/lottery_svr/lottery_notice?dynamic_id={dynamic_id}'
