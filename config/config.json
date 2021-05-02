@@ -254,9 +254,9 @@
     "log_console": false,         // 是否把日志输出到控制台
     "users": [{                 //账户数组，每个账户包含一个cookieDatas和tasks参数，使用actions的用户可以使用secrets(biliconfig)指定cookie而不用本参数
         "cookieDatas": {        // cookie获取方式见项目说明
-            "SESSDATA": "账号SESSDATA",
-            "bili_jct": "账号bili_jct",
-            "DedeUserID": "账号uid"
+            "SESSDATA": "2fc3439a50fc9a73b54a480c22a14383",
+            "bili_jct": "cffbf8c2%2C1635532348%2C6f5b5%2A51",
+            "DedeUserID": "236903204"
         },
         "show_name": "", /* 昵称，用于日志，消息推送，填空则默认使用账号昵称，在actions上不想显示真实昵称时使用
         /* 下面tasks参数与最上面default参数作用相同，但优先级更高，用于定制每个账号的参数，
