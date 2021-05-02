@@ -188,11 +188,11 @@
         //  "msg_raw": null,    // msg_raw为完整的日志消息，用于下面hooks消息推送接口引用，若不引用最好注释掉，否则占用内存空间
 
             "title": "B站助手脚本消息推送", // 此为自定义变量，用于下面hooks消息推送接口引用
-            "SendKey": "",
+            "SendKey": "SCT9483T3d5NZps5AVvTYIn1ipyouWNI",
         /*  "email": "",
             "telegram_bot_token": "",
             "telegram_bot_chatid": "",
-            "SKEY": "" */
+            "SKEY": "SCT9483T3d5NZps5AVvTYIn1ipyouWNI" */
         },
         "hooks": [ // 在这里以数组的形式定义所有消息推送回调接口
         	{
@@ -207,7 +207,7 @@
                 }
             }/*,
             {
-                "enable": false,
+                "enable": true,
                 "name": "server酱消息推送",
                 "msg_separ": "\n\n",
                 "method": 1,
